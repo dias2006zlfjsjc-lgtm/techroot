@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TechRoot — Tutos Linux & Windows</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="logo">tech<span>root</span><span class="blink">_</span></a>
+  <ul>
+    <li><a href="#">Tutoriels</a></li>
+    <li><a href="#">Linux</a></li>
+    <li><a href="#">Windows</a></li>
+    <li><a href="#">À propos</a></li>
+    <li><a href="#newsletter" class="nav-cta">Newsletter</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Tutoriels Tech en Français</div>
+    <h1>Maîtrise ton<br/><em>système.</em><br/>Sans galère.</h1>
+    <p class="hero-sub">
+      Des guides clairs sur Linux, Windows, dual-boot et dépannage système.
+      Écrits par quelqu'un qui a vécu les mêmes erreurs que toi.
+    </p>
+    <div class="hero-actions">
+      <a href="#articles" class="btn-primary">Voir les tutos →</a>
+      <a href="#categories" class="btn-ghost">Explorer les catégories</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat">
+    <span class="stat-num" id="stat-articles">…</span>
+    <span class="stat-label">Tutoriels publiés</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">100%</span>
+    <span class="stat-label">Gratuit</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">FR</span>
+    <span class="stat-label">Contenu en français</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">0</span>
+    <span class="stat-label">Bullshit</span>
+  </div>
+</div>
+
+<!-- ARTICLES -->
+<section class="section" id="articles">
+  <div class="section-header">
+    <h2 class="section-title">
+      Derniers articles
+      <br/><span>// récemment publiés</span>
+    </h2>
+    <a href="#" class="see-all">Tous les articles →</a>
+  </div>
+
+  <!-- Grille chargée dynamiquement -->
+  <div class="articles-grid" id="articles-grid">
+    <div class="loading">Chargement des articles…</div>
+  </div>
+
+  <!-- CATEGORIES -->
+  <div class="categories" id="categories"></div>
+</section>
+
+<!-- NEWSLETTER -->
+<div class="newsletter" id="newsletter">
+  <div class="newsletter-text">
+    <h2>Reste à jour<span style="color:var(--accent)">.</span></h2>
+    <p>Nouvel article chaque semaine. Pas de spam, jamais.</p>
+  </div>
+  <div class="newsletter-form">
+    <input type="email" placeholder="ton@email.com" />
+    <button>S'abonner →</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="/" class="footer-logo">techroot_</a>
+  <ul class="footer-links">
+    <li><a href="#">Tutoriels</a></li>
+    <li><a href="#">À propos</a></li>
+    <li><a href="#">Contact</a></li>
+    <li><a href="#">Mentions légales</a></li>
+  </ul>
+  <span class="footer-copy">© 2026 TechRoot</span>
+</footer>
+
+<script>
+  const API = '';
+
+  // ── Charger les articles ──────────────────────────────
+  async function chargerArticles() {
+    try {
+      const res = await fetch(`${API}/api/articles`);
+      const articles = await res.json();
+
+      // Mettre à jour le compteur
+      document.getElementById('stat-articles').textContent = articles.length + '+';
+
+      const grid = document.getElementById('articles-grid');
+      grid.innerHTML = '';
+
+      if (articles.length === 0) {
+        grid.innerHTML = '<div class="loading">Aucun article pour le moment.</div>';
+        return;
+      }
+
+      articles.forEach((article, index) => {
+        const isFeatured = article.featured === 1 && index === 0;
+        const tagClass = ['Dépannage', 'Windows'].includes(article.categorie) ? 'red' : '';
+
+        const card = document.createElement('a');
+        card.href = `/article.html?slug=${article.slug}`;
+        card.className = `article-card${isFeatured ? ' featured' : ''}`;
+
+        card.innerHTML = `
+          <span class="article-tag ${tagClass}">${article.categorie}</span>
+          <h3 class="article-title">${article.titre}</h3>
+          ${isFeatured && article.extrait ? `<p class="article-excerpt">${article.extrait}</p>` : ''}
+          <div class="article-meta">
+            <span class="article-date">// ${article.date}</span>
+            <span class="arrow">↗</span>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+
+    } catch (err) {
+      document.getElementById('articles-grid').innerHTML =
+        '<div class="loading">Erreur de chargement des articles.</div>';
+    }
+  }
+
+  // ── Charger les catégories ────────────────────────────
+  async function chargerCategories() {
+    try {
+      const res = await fetch(`${API}/api/categories`);
+      const categories = await res.json();
+
+      const container = document.getElementById('categories');
+      container.innerHTML = '';
+
+      categories.forEach(cat => {
+        const card = document.createElement('a');
+        card.href = '#';
+        card.className = 'cat-card';
+        card.innerHTML = `
+          <span class="cat-icon">${cat.icone}</span>
+          <div>
+            <div class="cat-name">${cat.nom}</div>
+            <div class="cat-count">${cat.nb_articles} article${cat.nb_articles > 1 ? 's' : ''}</div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+    } catch (err) {
+      console.error('Erreur catégories:', err);
+    }
+  }
+
+  // ── Lancement ─────────────────────────────────────────
+  chargerArticles();
+  chargerCategories();
+</script>
+
+</body>
+</html>
