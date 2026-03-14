@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TechRoot — Article</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/article.css"/>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="logo">tech<span>root</span><span class="blink">_</span></a>
+  <ul>
+    <li><a href="/">Tutoriels</a></li>
+    <li><a href="/">Linux</a></li>
+    <li><a href="/">Windows</a></li>
+    <li><a href="/">À propos</a></li>
+    <li><a href="/#newsletter" class="nav-cta">Newsletter</a></li>
+  </ul>
+</nav>
+
+<!-- CONTENU ARTICLE -->
+<div class="article-page" id="article-container">
+  <div class="loading-article">Chargement de l'article…</div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="/" class="footer-logo">techroot_</a>
+  <ul class="footer-links">
+    <li><a href="/">Tutoriels</a></li>
+    <li><a href="/">À propos</a></li>
+    <li><a href="/">Contact</a></li>
+    <li><a href="/">Mentions légales</a></li>
+  </ul>
+  <span class="footer-copy">© 2026 TechRoot</span>
+</footer>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get('slug');
+
+  function markdownToHtml(text) {
+    return text
+      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/^- (.+)$/gm, '<li>$1</li>')
+      .replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>')
+      .replace(/(<li>.*<\/li>(\n|$))+/g, m => `<ul>${m}</ul>`)
+      .replace(/\n\n/g, '</p><p>')
+      .trim();
+  }
+
+  async function chargerArticle() {
+    const container = document.getElementById('article-container');
+    if (!slug) {
+      container.innerHTML = '<div class="loading-article">Article introuvable.</div>';
+      return;
+    }
+    try {
+      const res = await fetch(`/api/articles/${slug}`);
+      if (!res.ok) throw new Error('Article non trouvé');
+      const article = await res.json();
+
+      document.title = `TechRoot — ${article.titre}`;
+      const tagClass = ['Dépannage', 'Windows'].includes(article.categorie) ? 'red' : '';
+
+      container.innerHTML = `
+        <a href="/" class="back-link">← Retour aux articles</a>
+        <div class="article-header">
+          <span class="article-tag ${tagClass}">${article.categorie}</span>
+          <h1>${article.titre}</h1>
+          <div class="meta">// Publié le ${article.date}</div>
+        </div>
+        <div class="article-body">
+          <p>${markdownToHtml(article.contenu)}</p>
+        </div>
+        <div class="article-footer">
+          <p>// Fin de l'article</p>
+          <a href="/" class="btn-primary">← Voir tous les articles</a>
+        </div>
+      `;
+    } catch (err) {
+      container.innerHTML = `
+        <a href="/" class="back-link">← Retour aux articles</a>
+        <div class="loading-article">Article introuvable.</div>
+      `;
+    }
+  }
+
+  chargerArticle();
+</script>
+
+</body>
+</html>

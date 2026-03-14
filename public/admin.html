@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TechRoot — Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/admin.css"/>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav>
+  <a href="/" class="logo">tech<span>root</span><span class="blink">_</span></a>
+  <ul>
+    <li><a href="tutoriels.html">Tutoriels</a></li>
+    <li><a href="/" class="nav-cta">← Site</a></li>
+  </ul>
+</nav>
+
+<section class="admin-page">
+  <div class="admin-header">
+    <div class="hero-tag">Panel Admin</div>
+    <h1>Gérer les<br/><em>articles.</em></h1>
+  </div>
+
+  <div class="admin-grid">
+    <!-- FORMULAIRE -->
+    <div class="admin-form-panel">
+      <h2 class="panel-title">// Nouvel article</h2>
+      <div class="admin-form">
+        <div class="form-group">
+          <label>Titre</label>
+          <input type="text" id="titre" placeholder="Titre de l'article"/>
+        </div>
+        <div class="form-group">
+          <label>Slug (URL)</label>
+          <input type="text" id="slug" placeholder="mon-article-url"/>
+        </div>
+        <div class="form-group">
+          <label>Catégorie</label>
+          <select id="categorie">
+            <option>Linux</option>
+            <option>Windows</option>
+            <option>Dépannage</option>
+            <option>BIOS</option>
+            <option>Partitionnement</option>
+            <option>Outils</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Extrait (résumé court)</label>
+          <input type="text" id="extrait" placeholder="Résumé en une phrase…"/>
+        </div>
+        <div class="form-group">
+          <label>Contenu (Markdown supporté)</label>
+          <textarea id="contenu" rows="10" placeholder="## Introduction&#10;&#10;Ton contenu ici…"></textarea>
+        </div>
+        <div class="form-group form-check">
+          <input type="checkbox" id="featured"/>
+          <label for="featured">Article mis en avant (featured)</label>
+        </div>
+        <button class="btn-primary" onclick="publier()">Publier l'article →</button>
+        <p class="form-note" id="form-note"></p>
+      </div>
+    </div>
+
+    <!-- LISTE DES ARTICLES -->
+    <div class="admin-list-panel">
+      <h2 class="panel-title">// Articles publiés</h2>
+      <div id="admin-articles">
+        <div class="loading">Chargement…</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Auto-générer le slug depuis le titre
+  document.getElementById('titre').addEventListener('input', function() {
+    const slug = this.value
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
+    document.getElementById('slug').value = slug;
+  });
+
+  async function publier() {
+    const note = document.getElementById('form-note');
+    const data = {
+      titre: document.getElementById('titre').value.trim(),
+      slug: document.getElementById('slug').value.trim(),
+      contenu: document.getElementById('contenu').value.trim(),
+      extrait: document.getElementById('extrait').value.trim(),
+      categorie: document.getElementById('categorie').value,
+      featured: document.getElementById('featured').checked
+    };
+
+    if (!data.titre || !data.slug || !data.contenu) {
+      note.style.color = 'var(--accent2)';
+      note.textContent = '⚠ Titre, slug et contenu sont requis.';
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/articles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      if (res.ok) {
+        note.style.color = 'var(--accent)';
+        note.textContent = '✅ Article publié avec succès !';
+        document.getElementById('titre').value = '';
+        document.getElementById('slug').value = '';
+        document.getElementById('contenu').value = '';
+        document.getElementById('extrait').value = '';
+        document.getElementById('featured').checked = false;
+        chargerArticles();
+      } else {
+        note.style.color = 'var(--accent2)';
+        note.textContent = '⚠ ' + result.erreur;
+      }
+    } catch(e) {
+      note.style.color = 'var(--accent2)';
+      note.textContent = '⚠ Erreur de connexion.';
+    }
+  }
+
+  async function supprimer(id) {
+    if (!confirm('Supprimer cet article ?')) return;
+    await fetch(`/api/articles/${id}`, { method: 'DELETE' });
+    chargerArticles();
+  }
+
+  async function chargerArticles() {
+    const res = await fetch('/api/articles');
+    const articles = await res.json();
+    const container = document.getElementById('admin-articles');
+
+    if (articles.length === 0) {
+      container.innerHTML = '<div class="loading">Aucun article.</div>';
+      return;
+    }
+
+    container.innerHTML = articles.map(a => `
+      <div class="admin-article-row">
+        <div class="admin-article-info">
+          <span class="article-tag ${['Dépannage','Windows'].includes(a.categorie)?'red':''}">${a.categorie}</span>
+          <span class="admin-article-title">${a.titre}</span>
+          <span class="admin-article-date">// ${a.date}</span>
+        </div>
+        <div class="admin-article-actions">
+          <a href="article.html?slug=${a.slug}" target="_blank" class="btn-view">Voir</a>
+          <button onclick="supprimer(${a.id})" class="btn-delete">Supprimer</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  chargerArticles();
+</script>
+</body>
+</html>

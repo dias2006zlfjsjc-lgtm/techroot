@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TechRoot — Newsletter</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/newsletter.css"/>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav>
+  <a href="/" class="logo">tech<span>root</span><span class="blink">_</span></a>
+  <ul>
+    <li><a href="tutoriels.html">Tutoriels</a></li>
+    <li><a href="linux.html">Linux</a></li>
+    <li><a href="windows.html">Windows</a></li>
+    <li><a href="apropos.html">À propos</a></li>
+    <li><a href="newsletter.html" style="color:var(--accent)" class="nav-cta">Newsletter</a></li>
+  </ul>
+</nav>
+
+<section class="newsletter-page">
+  <div class="nl-hero">
+    <div class="hero-tag">Reste informé</div>
+    <h1>La newsletter<br/><em>TechRoot.</em></h1>
+    <p class="nl-sub">Un email par semaine. Un tuto, une astuce, un outil. Pas de spam, jamais.</p>
+  </div>
+
+  <div class="nl-grid">
+    <!-- FORMULAIRE -->
+    <div class="nl-form-panel">
+      <h2 class="panel-title">// S'abonner</h2>
+      <div class="nl-form" id="nl-form">
+        <div class="form-group">
+          <label>Prénom</label>
+          <input type="text" id="prenom" placeholder="Ton prénom"/>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="email" placeholder="ton@email.com"/>
+        </div>
+        <div class="nl-topics">
+          <label class="topics-label">Sujets qui t'intéressent</label>
+          <div class="topics-grid">
+            <label class="topic-check"><input type="checkbox" value="linux" checked/> 🐧 Linux</label>
+            <label class="topic-check"><input type="checkbox" value="windows" checked/> 🪟 Windows</label>
+            <label class="topic-check"><input type="checkbox" value="depannage"/> 🔧 Dépannage</label>
+            <label class="topic-check"><input type="checkbox" value="outils"/> 🛠️ Outils</label>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="sAbonner()">S'abonner gratuitement →</button>
+        <p class="form-note" id="nl-note"></p>
+      </div>
+    </div>
+
+    <!-- POURQUOI S'ABONNER -->
+    <div class="nl-info-panel">
+      <h2 class="panel-title">// Pourquoi s'abonner ?</h2>
+      <div class="nl-reasons">
+        <div class="nl-reason">
+          <span class="reason-icon">📬</span>
+          <div>
+            <h3>1 email par semaine</h3>
+            <p>Pas de flood. Un seul email le lundi matin avec le meilleur du site.</p>
+          </div>
+        </div>
+        <div class="nl-reason">
+          <span class="reason-icon">🔓</span>
+          <div>
+            <h3>100% gratuit</h3>
+            <p>Aucun abonnement payant, aucune carte bancaire requise.</p>
+          </div>
+        </div>
+        <div class="nl-reason">
+          <span class="reason-icon">🚫</span>
+          <div>
+            <h3>Zéro spam</h3>
+            <p>Ton email ne sera jamais vendu ni partagé. Tu te désabonnes en un clic.</p>
+          </div>
+        </div>
+        <div class="nl-reason">
+          <span class="reason-icon">⚡</span>
+          <div>
+            <h3>En avant-première</h3>
+            <p>Les abonnés reçoivent les nouveaux articles avant leur publication sur le site.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DERNIERS NUMÉROS -->
+  <div class="nl-archives">
+    <h2 class="panel-title">// Derniers numéros</h2>
+    <div class="archives-grid">
+      <div class="archive-card">
+        <span class="archive-num">#003</span>
+        <h3>Réparer winload.efi sans perdre ses données</h3>
+        <span class="archive-date">// 10 mars 2026</span>
+      </div>
+      <div class="archive-card">
+        <span class="archive-num">#002</span>
+        <h3>Ventoy : la clé USB ultime pour les geeks</h3>
+        <span class="archive-date">// 03 mars 2026</span>
+      </div>
+      <div class="archive-card">
+        <span class="archive-num">#001</span>
+        <h3>Dual-boot : les 5 erreurs à ne jamais faire</h3>
+        <span class="archive-date">// 24 fév 2026</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a href="/" class="footer-logo">techroot_</a>
+  <ul class="footer-links">
+    <li><a href="tutoriels.html">Tutoriels</a></li>
+    <li><a href="apropos.html">À propos</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="#">Mentions légales</a></li>
+  </ul>
+  <span class="footer-copy">© 2026 TechRoot</span>
+</footer>
+
+<script>
+  function sAbonner() {
+    const prenom = document.getElementById('prenom').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const note = document.getElementById('nl-note');
+
+    if (!prenom || !email) {
+      note.style.color = 'var(--accent2)';
+      note.textContent = '⚠ Remplis ton prénom et ton email.';
+      return;
+    }
+
+    if (!email.includes('@')) {
+      note.style.color = 'var(--accent2)';
+      note.textContent = '⚠ Adresse email invalide.';
+      return;
+    }
+
+    note.style.color = 'var(--accent)';
+    note.textContent = `✅ Bienvenue ${prenom} ! Vérifie ta boîte mail pour confirmer.`;
+    document.getElementById('prenom').value = '';
+    document.getElementById('email').value = '';
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TechRoot — Linux</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/tutoriels.css"/>
+  <link rel="stylesheet" href="css/tutoriels.css"/>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav>
+  <a href="/" class="logo">tech<span>root</span><span class="blink">_</span></a>
+  <ul>
+    <li><a href="tutoriels.html">Tutoriels</a></li>
+    <li><a href="linux.html" style="color:var(--accent)">Linux</a></li>
+    <li><a href="windows.html">Windows</a></li>
+    <li><a href="apropos.html">À propos</a></li>
+    <li><a href="/#newsletter" class="nav-cta">Newsletter</a></li>
+  </ul>
+</nav>
+
+<section class="list-page">
+  <div class="list-header">
+    <div class="hero-tag">Guides Linux</div>
+    <h1>Linux<em>.</em></h1>
+    <p class="list-sub">Tous les articles sur Linux, le terminal et les distributions. sur TechRoot, classés du plus récent au plus ancien.</p>
+  </div>
+
+  <div class="filter-bar">
+    <input type="text" id="search" placeholder="Rechercher un article…" />
+    <select id="categorie-filter">
+      <option value="">Toutes les catégories</option>
+    </select>
+  </div>
+
+  <div class="list-grid" id="list-grid">
+    <div class="loading">Chargement…</div>
+  </div>
+</section>
+
+<footer>
+  <a href="/" class="footer-logo">techroot_</a>
+  <ul class="footer-links">
+    <li><a href="tutoriels.html">Tutoriels</a></li>
+    <li><a href="apropos.html">À propos</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <span class="footer-copy">© 2026 TechRoot</span>
+</footer>
+
+<script>
+  let allArticles = [];
+
+  async function charger() {
+    const [artRes, catRes] = await Promise.all([
+      fetch('/api/articles'),
+      fetch('/api/categories')
+    ]);
+    allArticles = await artRes.json();
+    const categories = await catRes.json();
+
+    const select = document.getElementById('categorie-filter');
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.nom;
+      opt.textContent = c.nom;
+      select.appendChild(opt);
+    });
+
+    document.getElementById('categorie-filter').value = 'Linux'; filtrer();
+  }
+
+  function afficher(articles) {
+    const grid = document.getElementById('list-grid');
+    if (articles.length === 0) {
+      grid.innerHTML = '<div class="loading">Aucun article trouvé.</div>';
+      return;
+    }
+    grid.innerHTML = articles.map(a => {
+      const tagClass = ['Dépannage','Windows'].includes(a.categorie) ? 'red' : '';
+      return `
+        <a href="article.html?slug=${a.slug}" class="list-card">
+          <span class="article-tag ${tagClass}">${a.categorie}</span>
+          <h3 class="article-title">${a.titre}</h3>
+          <p class="article-excerpt">${a.extrait || ''}</p>
+          <div class="article-meta">
+            <span class="article-date">// ${a.date}</span>
+            <span class="arrow">↗</span>
+          </div>
+        </a>
+      `;
+    }).join('');
+  }
+
+  document.getElementById('search').addEventListener('input', filtrer);
+  document.getElementById('categorie-filter').addEventListener('change', filtrer);
+
+  function filtrer() {
+    const q = document.getElementById('search').value.toLowerCase();
+    const cat = document.getElementById('categorie-filter').value;
+    const filtered = allArticles.filter(a =>
+      (a.titre.toLowerCase().includes(q) || a.extrait?.toLowerCase().includes(q)) &&
+      (cat === '' || a.categorie === cat)
+    );
+    afficher(filtered);
+  }
+
+  charger();
+</script>
+</body>
+</html>

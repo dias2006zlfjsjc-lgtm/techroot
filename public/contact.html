@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TechRoot — Contact</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/contact.css"/>
+</head>
+<body>
+<div class="grid-bg"></div>
+<nav>
+  <a href="/" class="logo">tech<span>root</span><span class="blink">_</span></a>
+  <ul>
+    <li><a href="tutoriels.html">Tutoriels</a></li>
+    <li><a href="linux.html">Linux</a></li>
+    <li><a href="windows.html">Windows</a></li>
+    <li><a href="apropos.html">À propos</a></li>
+    <li><a href="/#newsletter" class="nav-cta">Newsletter</a></li>
+  </ul>
+</nav>
+
+<section class="contact-page">
+  <div class="contact-header">
+    <div class="hero-tag">Écris-moi</div>
+    <h1>Contact<em>.</em></h1>
+    <p class="contact-sub">Une question, une suggestion, un bug à signaler ? Je lis tous les messages.</p>
+  </div>
+
+  <div class="contact-grid">
+    <div class="contact-info">
+      <div class="info-block">
+        <span class="info-label">// Email</span>
+        <a href="mailto:contact@techroot.fr" class="info-value">contact@techroot.fr</a>
+      </div>
+      <div class="info-block">
+        <span class="info-label">// Réponse</span>
+        <span class="info-value">Sous 48h en général</span>
+      </div>
+      <div class="info-block">
+        <span class="info-label">// Langues</span>
+        <span class="info-value">Français, English</span>
+      </div>
+    </div>
+
+    <div class="contact-form-wrapper">
+      <div class="contact-form" id="contact-form">
+        <div class="form-group">
+          <label>Nom</label>
+          <input type="text" id="nom" placeholder="Ton nom" />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="email" placeholder="ton@email.com" />
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea id="message" rows="5" placeholder="Ton message…"></textarea>
+        </div>
+        <button class="btn-primary" onclick="envoyer()">Envoyer →</button>
+        <p class="form-note" id="form-note"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a href="/" class="footer-logo">techroot_</a>
+  <ul class="footer-links">
+    <li><a href="tutoriels.html">Tutoriels</a></li>
+    <li><a href="apropos.html">À propos</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <span class="footer-copy">© 2026 TechRoot</span>
+</footer>
+
+<script>
+  function envoyer() {
+    const nom = document.getElementById('nom').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const message = document.getElementById('message').value.trim();
+    const note = document.getElementById('form-note');
+
+    if (!nom || !email || !message) {
+      note.style.color = 'var(--accent2)';
+      note.textContent = '⚠ Remplis tous les champs.';
+      return;
+    }
+
+    note.style.color = 'var(--accent)';
+    note.textContent = '✅ Message envoyé ! Je te réponds sous 48h.';
+    document.getElementById('nom').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('message').value = '';
+  }
+</script>
+</body>
+</html>

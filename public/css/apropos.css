@@ -1,0 +1,73 @@
+.apropos-page {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 8rem 2rem 5rem;
+}
+
+.apropos-hero {
+  margin-bottom: 4rem;
+  animation: fadeUp 0.6s ease both;
+}
+
+.apropos-hero h1 {
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.0;
+  margin-top: 1rem;
+}
+
+.apropos-hero h1 em { font-style: normal; color: var(--accent); }
+
+.apropos-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid var(--border);
+}
+
+.apropos-block {
+  display: flex;
+  gap: 2.5rem;
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--border);
+  animation: fadeUp 0.5s ease both;
+}
+
+.block-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--accent);
+  flex-shrink: 0;
+  margin-top: 0.3rem;
+  opacity: 0.6;
+}
+
+.apropos-block h2 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+
+.apropos-block p {
+  color: var(--muted);
+  line-height: 1.8;
+  margin-bottom: 0.8rem;
+  font-size: 0.95rem;
+}
+
+.apropos-cta {
+  display: flex;
+  gap: 1rem;
+  margin-top: 3rem;
+  flex-wrap: wrap;
+  animation: fadeUp 0.5s 0.2s ease both;
+}
+
+@media (max-width: 768px) {
+  .apropos-page { padding: 7rem 1.5rem 3rem; }
+  .apropos-block { flex-direction: column; gap: 1rem; }
+}

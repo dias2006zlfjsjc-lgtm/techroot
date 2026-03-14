@@ -1,0 +1,113 @@
+.contact-page {
+  position: relative;
+  z-index: 1;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 8rem 2rem 5rem;
+}
+
+.contact-header {
+  margin-bottom: 4rem;
+  animation: fadeUp 0.6s ease both;
+}
+
+.contact-header h1 {
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.contact-header h1 em { font-style: normal; color: var(--accent); }
+
+.contact-sub {
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 1px;
+  background: var(--border);
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+
+.contact-info {
+  background: var(--card);
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.info-block { display: flex; flex-direction: column; gap: 0.4rem; }
+
+.info-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+
+.info-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a.info-value:hover { color: var(--accent); }
+
+.contact-form-wrapper {
+  background: var(--card);
+  padding: 2.5rem;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.form-group input, .form-group textarea {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.85rem 1.2rem;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: vertical;
+}
+
+.form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
+.form-group input::placeholder, .form-group textarea::placeholder { color: var(--muted); }
+
+.form-note {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  margin-top: -0.5rem;
+}
+
+@media (max-width: 768px) {
+  .contact-page { padding: 7rem 1.5rem 3rem; }
+  .contact-grid { grid-template-columns: 1fr; }
+}
